@@ -1,0 +1,17 @@
+== Introduction
+:page-editUrl: https://github.com/davidsvejda/snow-ansible-docs
+This document aims to describe the installation and configuration steps and verification for ServiceNow and Ansible integration.
+
+=== Scope
+
+The goal is to have all servers in ServiceNow inventory and perform any changes on them from within the ServiceNow.
+
+==== In Scope
+
+ServiceNow release Madrid
+Ansible Tower
+Various Linux servers
+
+==== Out of Scope 
+
+ServiceNow installation. We use ServiceNow Developer Instance at https://developer.servicenow.com

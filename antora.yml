@@ -1,0 +1,6 @@
+name: snow-ansible
+title: SNOW Ansible Integration 
+version: 1.0
+start_page: ROOT:introduction.adoc
+nav:
+- modules/ROOT/nav.adoc
