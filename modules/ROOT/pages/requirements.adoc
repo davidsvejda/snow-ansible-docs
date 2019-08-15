@@ -5,6 +5,7 @@
 
 AWX provides a web-based user interface, REST API, and task engine built on top of Ansible. It is the upstream project for Tower, a commercial derivative of AWX.
 See https://github.com/ansible/awx
+
 ==== Installation of AWX
 
 Following docs at https://github.com/ansible/awx/blob/devel/INSTALL.md
@@ -64,4 +65,137 @@ Verify that Docker Engine - Community is installed correctly by running the hell
 docker run hello-world
 
 ----
+
+Install Docker Python module
+
+----
+
+yum install python36-docker
+
+----
+
+Install Git
+Since version 1.8.4 or higher is needed, let's install Git from source
+First, install dependencies 
+
+----
+
+yum groupinstall "Development Tools"
+yum install curl-devel gettext-devel openssl-devel perl-CPAN perl-devel zlib-devel
+
+----
+
+Download and install Git
+
+----
+
+wget https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.22.1.tar.gz
+wget https://mirrors.edge.kernel.org/pub/software/scm/git/sha256sums.asc
+
+sha256sum -c sha256sums.asc 2>&1 | grep git-2.22.1.tar.gz
+
+tar -C /usr/local/src -xzvf git-2.22.1.tar.gz
+cd /usr/local/src/git-2.22.1
+./configure --prefix=/usr/local
+make
+make install
+
+----
+
+Download and install Node 10.x LTS version
+See https://github.com/nodejs/node#verifying-binaries
+
+----
+
+wget https://nodejs.org/dist/v10.16.2/node-v10.16.2-linux-x64.tar.xz
+wget https://nodejs.org/dist/v10.16.2/SHASUMS256.txt
+wget https://nodejs.org/dist/v10.16.2/SHASUMS256.txt.sig
+
+iptbles --flush
+
+gpg --keyserver pool.sks-keyservers.net --recv-keys DD8F2338BAE7501E3DD5AC78C273792F7D83545D
+gpg --keyserver pool.sks-keyservers.net --recv-keys 4ED778F539E3634C779C87C6D7062848A1AB005C
+gpg --keyserver pool.sks-keyservers.net --recv-keys B9E2F5981AA6E0CD28160D9FF13993A75599653C
+gpg --keyserver pool.sks-keyservers.net --recv-keys 94AE36675C464D64BAFA68DD7434390BDBE9B9C5
+gpg --keyserver pool.sks-keyservers.net --recv-keys B9AE9905FFD7803F25714661B63B535A4C206CA9
+gpg --keyserver pool.sks-keyservers.net --recv-keys 77984A986EBC2AA786BC0F66B01FBB92821C587A
+gpg --keyserver pool.sks-keyservers.net --recv-keys 71DCFD284A79C3B38668286BC97EC7A07EDE3FC1
+gpg --keyserver pool.sks-keyservers.net --recv-keys FD3A5288F042B6850C66B31F09FE44734EB7990E
+gpg --keyserver pool.sks-keyservers.net --recv-keys 8FCCA13FEF1D0C2E91008E09770F7A9A5AE15600
+gpg --keyserver pool.sks-keyservers.net --recv-keys C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8
+gpg --keyserver pool.sks-keyservers.net --recv-keys DD8F2338BAE7501E3DD5AC78C273792F7D83545D
+gpg --keyserver pool.sks-keyservers.net --recv-keys A48C2BEE680E841632CD4E44F07496B3EB3C1762
+
+service firewalld reload
+
+gpg --verify SHASUMS256.txt.sig SHASUMS256.txt
+sha256sum -c SHASUMS256.txt 2>&1 | grep node-v10.16.2-linux-x64.tar.xz
+
+xz -d node-v10.16.2-linux-x64.tar.xz
+tar -C /usr/local/src -xvf node-v10.16.2-linux-x64.tar
+chown -R root:root /usr/local/src/node-v10.16.2-linux-x64/
+/bin/cp -pr /usr/local/src/node-v10.16.2-linux-x64/* /usr/local/.
+
+----
+
+Install AWX
+
+
+Install docker-compose Python module
+
+----
+
+yum install docker-compose
+
+----
+
+
+Update Python symlinks to Python 3
+
+----
+
+update-alternatives --install /usr/bin/python python /usr/bin/python2 50
+update-alternatives --install /usr/bin/python python /usr/bin/python3 60
+update-alternatives --config python
+
+----
+
+Install  AWX
+
+----
+
+cd /usr/local/src
+git clone https://github.com/ansible/awx.git
+
+/usr/local/src/awx/installer
+ansible-playbook -i inventory install.yml
+
+----
+
+Post build
+
+You can view the running containers using the docker ps command, as follows:
+
+----
+
+CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS              PORTS                                                 NAMES
+9b0a28e5bfad        ansible/awx_task:6.1.0       "/tini -- /bin/sh -c…"   6 minutes ago       Up 6 minutes        8052/tcp                                              awx_task
+f39503745bbf        ansible/awx_web:6.1.0        "/tini -- /bin/sh -c…"   6 minutes ago       Up 6 minutes        0.0.0.0:80->8052/tcp                                  awx_web
+06a56ab624f8        memcached:alpine             "docker-entrypoint.s…"   6 minutes ago       Up 6 minutes        11211/tcp                                             awx_memcached
+c9dabf6da1e8        ansible/awx_rabbitmq:3.7.4   "docker-entrypoint.s…"   6 minutes ago       Up 6 minutes        4369/tcp, 5671-5672/tcp, 15671-15672/tcp, 25672/tcp   awx_rabbitmq
+62ab7067ecc3        postgres:9.6                 "docker-entrypoint.s…"   6 minutes ago       Up 6 minutes        5432/tcp                                              awx_postgres
+
+----
+
+Immediately after the containers start, the awx_task container will perform required setup tasks, including database migrations. These tasks need to complete before the web interface can be accessed. To monitor the progress, you can follow the container's STDOUT by running the following:
+
+----
+
+docker logs -f awx_task
+
+----
+
+And that's it! Go to http://<ip-address> to access AWX
+
+
 
