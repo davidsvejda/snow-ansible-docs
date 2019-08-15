@@ -1,8 +1,8 @@
 # snow-ansible-docs
 Documentation for ServiceNow and Ansible integration
 
-To build the documentation, get Antora <https://antora.org>
-and build the docs using following site.yml
+To build the documentation, get Antora from <https://antora.org>
+and build the docs using following *site.yml*
 
 ```YAML
 
