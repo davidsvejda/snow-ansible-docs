@@ -167,7 +167,7 @@ Install  AWX
 cd /usr/local/src
 git clone https://github.com/ansible/awx.git
 
-/usr/local/src/awx/installer
+cd /usr/local/src/awx/installer
 ansible-playbook -i inventory install.yml
 
 ----
