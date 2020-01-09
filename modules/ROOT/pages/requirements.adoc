@@ -66,14 +66,6 @@ docker run hello-world
 
 ----
 
-Install Docker Python module
-
-----
-
-yum install python36-docker
-
-----
-
 Install Git
 Since version 1.8.4 or higher is needed, let's install Git from source
 First, install dependencies 
@@ -138,14 +130,12 @@ chown -R root:root /usr/local/src/node-v10.16.2-linux-x64/
 
 ----
 
-Install AWX
 
-
-Install docker-compose Python module
+Install Python 3 
 
 ----
 
-yum install docker-compose
+yum install python3
 
 ----
 
@@ -159,6 +149,15 @@ update-alternatives --install /usr/bin/python python /usr/bin/python3 60
 update-alternatives --config python
 
 ----
+
+Instal Ansible and docker-compose
+
+----
+
+pip-3 install ansible docker-compose
+
+----
+
 
 Install  AWX
 
