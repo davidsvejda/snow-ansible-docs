@@ -12,14 +12,6 @@ Following docs at https://github.com/ansible/awx/blob/devel/INSTALL.md
 
 Operating system CentOS 7
 
-Install Ansible
-
-----
-
-yum install ansible
-
-----
-
 Install Docker
 
 Install required packages
