@@ -103,7 +103,7 @@ wget https://nodejs.org/dist/v10.16.2/node-v10.16.2-linux-x64.tar.xz
 wget https://nodejs.org/dist/v10.16.2/SHASUMS256.txt
 wget https://nodejs.org/dist/v10.16.2/SHASUMS256.txt.sig
 
-iptbles --flush
+iptables --flush
 
 gpg --keyserver pool.sks-keyservers.net --recv-keys DD8F2338BAE7501E3DD5AC78C273792F7D83545D
 gpg --keyserver pool.sks-keyservers.net --recv-keys 4ED778F539E3634C779C87C6D7062848A1AB005C
