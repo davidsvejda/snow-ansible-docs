@@ -4,12 +4,12 @@ This document aims to describe the installation and configuration steps and veri
 
 === Scope
 
-The goal is to have all servers in ServiceNow inventory and perform any changes on them from within the ServiceNow.
+The goal is to manage all servers through Ansible,  integrate Ansible Tower or Ansible AWX with ServiceNow and through this integration ultimately perform predefined changes on servers from ServiceNow web interface.
 
 ==== In Scope
 
-ServiceNow release Madrid
-Ansible Tower
+ServiceNow release New York +
+AWX and/or Ansible Tower +
 Various Linux servers
 
 ==== Out of Scope 
