@@ -6,11 +6,65 @@
 AWX provides a web-based user interface, REST API, and task engine built on top of Ansible. It is the upstream project for Tower, a commercial derivative of AWX.
 See https://github.com/ansible/awx
 
-==== Installation of AWX
-
-Following docs at https://github.com/ansible/awx/blob/devel/INSTALL.md
+==== Installation of AWX with external database
 
 Operating system CentOS 7
+
+Install PostgreSQL 11
+
+Install PostgreSQL YUM repository
+
+----
+
+rpm -Uvh https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
+----
+
+Install PostgreSQL 11 Server
+
+----
+
+yum install postgresql11 postgresql11-server
+
+----
+
+Initialize PGDATA
+
+After installing PostgreSQL server, it is required to create a new PostgreSQL database cluster.
+
+----
+
+/usr/pgsql-11/bin/postgresql-11-setup initdb
+
+----
+
+Start PostgreSQL Server
+
+----
+
+systemctl start postgresql-11.service
+systemctl enable postgresql-11.service
+
+----
+
+Create PostgreSQL database and user
+
+Create db user with login priviledge (-l option) and create password (-P option) 
+
+----
+
+su - postgres
+createuser -l -P awxuser
+
+----
+
+Create database, which will be owned by the user we've just created
+
+----
+
+createdb --owner=awxuser awx
+
+----
 
 Install Docker
 
@@ -39,6 +93,28 @@ Install the latest version of Docker Engine - Community and containerd
 ----
 
 yum install docker-ce docker-ce-cli containerd.io
+
+----
+
+Modify firewall
+
+Allow Docker containers to connect to the internet in case you've got external database
+Put the following into /etc/firewalld/zones/public.xml
+
+----
+
+   <rule family="ipv4">
+     <source address="172.18.0.0/16"/>
+     <accept/>
+   </rule>
+
+----
+
+and restart firewalld
+
+----
+
+systemctl restart firewalld
 
 ----
 
@@ -151,12 +227,31 @@ pip-3 install ansible docker-compose
 ----
 
 
-Install  AWX
+Install AWX
 
 ----
 
 cd /usr/local/src
 git clone https://github.com/ansible/awx.git
+
+----
+
+
+Download AWX official logos
+In case you want to use official AWX logos, because the default one is a bit weird :)
+
+----
+
+curl -L -o awx-logos.tar.gz https://github.com/ansible/awx-logos/archive/master.tar.gz
+tar xvfz awx-logos.tar.gz
+mv awx-logos-master awx-logos
+rm -f *awx*.tar.gz
+
+----
+
+Start AWX installer
+
+----
 
 cd /usr/local/src/awx/installer
 ansible-playbook -i inventory install.yml
