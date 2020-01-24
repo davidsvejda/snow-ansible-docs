@@ -66,6 +66,44 @@ createdb --owner=awxuser awx
 
 ----
 
+Allow connections to the PostgreSQL database
+Edit the file /var/lib/pgsql/11/data/postgresql.conf to have the following lines
+
+---- 
+
+listen_addresses = '*'   
+port = 5432
+
+----
+
+Modify /var/lib/pgsql/11/data/pg_hba.conf 
+
+----
+
+# IPv4
+host    all             all             0.0.0.0/0               md5
+# IPv6
+host    all             all             ::/0                    md5
+
+----
+
+Add firewall rule for PostgreSQL
+
+----
+
+firewall-cmd --add-service=postgresql --permanent
+
+----
+
+Restart PostgreSQL service
+
+----
+
+systemctl restart postgresql-11
+
+----
+
+
 Install Docker
 
 Install required packages
@@ -149,6 +187,7 @@ Download and install Git
 
 ----
 
+cd ~
 wget https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.22.1.tar.gz
 wget https://mirrors.edge.kernel.org/pub/software/scm/git/sha256sums.asc
 
@@ -167,6 +206,7 @@ See https://github.com/nodejs/node#verifying-binaries
 
 ----
 
+cd ~
 wget https://nodejs.org/dist/v10.16.2/node-v10.16.2-linux-x64.tar.xz
 wget https://nodejs.org/dist/v10.16.2/SHASUMS256.txt
 wget https://nodejs.org/dist/v10.16.2/SHASUMS256.txt.sig
@@ -242,12 +282,33 @@ In case you want to use official AWX logos, because the default one is a bit wei
 
 ----
 
+cd /usr/local/src
 curl -L -o awx-logos.tar.gz https://github.com/ansible/awx-logos/archive/master.tar.gz
 tar xvfz awx-logos.tar.gz
 mv awx-logos-master awx-logos
-rm -f *awx*.tar.gz
 
 ----
+
+Modify installation to create local images
+Modify /usr/local/src/awx/installer/inventory file
+
+----
+
+#dockerhub_base=ansible
+
+
+# Set pg_hostname if you have an external postgres server, otherwise
+# a new postgres service will be created
+pg_hostname=<where PostgreSQL is listening>
+pg_username=awxuser
+# pg_password should be random 10 character alphanumeric string, when postgresql is running on kubernetes
+# NB: it's a limitation of the "official" postgres helm chart
+pg_password=<the password for the awxuser, obviously>
+pg_database=awx
+pg_port=5432
+
+----
+
 
 Start AWX installer
 
